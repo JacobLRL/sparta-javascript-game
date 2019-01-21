@@ -2,10 +2,19 @@ body {
     background: pink;
 }
 
+#board {
+    border-style: inset;
+    border-width: 5px;
+    margin-top: -6px;
+    padding-bottom: 0;
+    width: 100%;
+}
+
 .row {
     display: block;
     padding: 0;
     margin: 0;
+    width: 100%;
 }
 
 .square {
@@ -16,10 +25,58 @@ body {
     width: 30px;
     height: 30px;
     padding: 0;
-    margin-top: -6px;
+    margin-top: 0;
+    vertical-align: bottom;
 }
 
 .square:focus {
     outline: none;
     border-style: inset;
+}
+
+.square-clicked {
+    display: inline-block;
+    background: #bfbfbf;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    margin-top: 0;
+    vertical-align: bottom;
+    font-size: 30px;
+    text-align: center;
+}
+
+.square-clicked:focus {
+    outline: none;
+}
+
+.bomb {
+    display: inline-block;
+    /* background-image: url("../img/icon.ico"); */
+    background: red;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    margin-top: 0;
+    vertical-align: bottom;
+}
+
+.bomb:focus {
+    outline:none;
+}
+
+.flag {
+    display: inline-block;
+    background: #b8b8b8;
+    border-style: outset;
+    border-width: 5px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    margin-top: 0;
+    vertical-align: bottom;
+}
+
+.flag:focus {
+    outline: none;
 }
