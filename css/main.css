@@ -1,13 +1,18 @@
+html {
+    height: 100%;
+}
+
 body {
     background: pink;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
 }
 
 #board {
     border-style: inset;
     border-width: 5px;
-    margin-top: -6px;
-    padding-bottom: 0;
-    width: 100%;
 }
 
 .row {

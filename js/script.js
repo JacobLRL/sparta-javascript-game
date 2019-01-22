@@ -8,29 +8,34 @@ document.addEventListener("DOMContentLoaded", function () {
             this.row = 8;
             this.column = 8;
             this.bombs = 10;
+            this.countOfClear = 54;
             this.board = document.getElementById("board");
             this.boardBombs1 = [];
             this.boardBombs2 = [];
             this.firstTurn = true;
+            this.clearedSquares = document.getElementsByClassName("square-clicked");
             console.log("created");
         }
-
+        // difficulty level selection
         difficulty(level) {
             if (level == "easy") {
                 this.row = 8;
                 this.column = 8;
                 this.bombs = 10;
+                this.countOfClear = 54;
             } else if (level == "intermediate") {
                 this.row = 16;
                 this.column = 16;
                 this.bombs = 40;
+                this.countOfClear = 216;
             } else {
                 this.row = 16;
                 this.column = 30;
                 this.bombs = 99;
+                this.countOfClear = 381;
             }
         }
-
+        // main function for interacting with the boeard
         createGrid() {
             let boardBombs = this.boardBombs1;
             for (let i = 0; i < this.row; i++) {
@@ -47,12 +52,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 board.appendChild(row1);
             }
             let squares = document.getElementsByClassName("square");
+            let squaresClicked = document.getElementsByClassName("square-clicked");
             for (let i = 0; i < squares.length; i++) {
                 squares[i].addEventListener("click", e => {
+                    // stops clicking on flagged squares
+                    if (e.target.parentNode.classList.contains("flag"))
+                        return;
+                    if (e.target.classList.contains("square-clicked"))
+                        return;
+                    // makes sure you don't lose on the first click
                     if (this.firstTurn && this.boardBombs1[e.target.parentNode.id][e.target.id] == 1) {
                         boardBombs = this.boardBombs2;
                         this.firstTurn = false;
+                    } else {
+                        this.firstTurn = false;
                     }
+                    // lose condition, and carry on condition, need to add board reset sort of function
                     if (boardBombs[e.target.parentNode.id][e.target.id] == 1) {
                         e.target.setAttribute("class", "bomb");
                         let mine = new Image();
@@ -61,13 +76,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         e.target.appendChild(mine);
                         alert("gameover");
                     } else {
-                        e.target.setAttribute("class", "square-clicked");
-                        if(this.numberOfBombs(parseInt(e.target.parentNode.id), parseInt(e.target.id), boardBombs)>0){
-                            e.target.innerText = this.numberOfBombs(parseInt(e.target.parentNode.id), parseInt(e.target.id), boardBombs);
-                        }
+                        this.clearSurrounding(parseInt(e.target.parentNode.id), parseInt(e.target.id), board, boardBombs);
+                        this.winner(squaresClicked);
                     }
-                });
 
+                });
+                // flag and unflag squares
                 squares[i].addEventListener("contextmenu", e => {
                     e.preventDefault();
                     if (e.target.parentNode.classList.contains("flag")) {
@@ -87,25 +101,62 @@ document.addEventListener("DOMContentLoaded", function () {
 
             }
         }
+        // gets the surroundings
+        getSurroundings(row, col) {
+            let inCells = [
+                [row - 1, col - 1],
+                [row - 1, col],
+                [row - 1, col + 1],
+                [row, col - 1],
+                [row, col + 1],
+                [row + 1, col - 1],
+                [row + 1, col],
+                [row + 1, col + 1],
+            ];
+            let outCells = [];
+            inCells.forEach(cell => {
+                if (cell[0] >= 0 && cell[0] < this.row && cell[1] >= 0 && cell[1] < this.column) {
+                    outCells.push(cell);
+                }
+            });
 
+            return outCells;
+
+        }
+        // number of bombs surrounding a square
         numberOfBombs(row, col, board) {
             let count = 0;
-            for (let i = -1; i <= 1; i++) {
-                for (let j = -1; j <= 1; j++) {
-                    if (row + i < 0 || col + j < 0 || row + i > board.length - 1 || col + j > board[0].length - 1) {
-                        // catching out of bounds
-                    } else if (board[row + i][col + j] === 1) {
-                        count++;
-                    }
-                }
-            }
+            let cells = this.getSurroundings(row, col);
+            cells.forEach(cell => {
+                count += board[cell[0]][cell[1]];
+            });
+
             return count;
         }
+        // clears surround area if the square has no bombs surounding it
+        clearSurrounding(row, col, board, boardBombs) {
+            if (row < 0 || row >= this.row || col < 0 || col >= this.column) {
+                return;
+            }
 
+            if (board.childNodes[row].childNodes[col].classList.contains("square-clicked")) {
+                return;
+            }
+            board.childNodes[row].childNodes[col].setAttribute("class", "square-clicked");
+            let bombs = this.numberOfBombs(row, col, boardBombs);
+            if (bombs > 0) {
+                board.childNodes[row].childNodes[col].innerText = "" + bombs;
+                return;
+            }
+            let cells = this.getSurroundings(row, col);
+            cells.forEach(cell => {
+                this.clearSurrounding(cell[0], cell[1], board, boardBombs);
+            });
+        }
         randomBombLocations(lengths) {
             return Math.floor(Math.random() * lengths);
         }
-
+        // makes sure no repeating bombs and creates backup board for not losing on first click
         createBottomLayer() {
             let count = this.bombs;
             let count1 = this.bombs;
@@ -117,7 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     this.boardBombs2[i].push(0);
                 }
             }
-            while (count >= 0) {
+            while (count > 0) {
                 let rowBomb = this.randomBombLocations(this.row);
                 let columnBomb = this.randomBombLocations(this.column);
 
@@ -126,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     count--;
                 }
             }
-            while (count1 >= 0) {
+            while (count1 > 0) {
                 let rowBomb = this.randomBombLocations(this.row);
                 let columnBomb = this.randomBombLocations(this.column);
 
@@ -137,11 +188,22 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             console.log(this.boardBombs1);
             console.log(this.boardBombs2);
-
+        }
+        // win condition
+        winner(board) {
+            if (board.length == this.countOfClear) {
+                alert("winner");
+            }
         }
     }
 
+
     let mines = new MineSweeper();
+    easy = document.getElementById("easy");
+    medium = document.getElementById("medium");
+    hard = document.getElementById("hard");
+    buttons = [easy, medium, hard]
+
     mines.difficulty(level);
     mines.createBottomLayer();
     mines.createGrid();
