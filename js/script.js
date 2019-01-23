@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    let level = prompt("What difficulty would you like?\n'easy', 'intermediate' or 'advanced'");
-
     class MineSweeper {
 
         constructor() {
@@ -13,18 +11,21 @@ document.addEventListener("DOMContentLoaded", function () {
             this.boardBombs1 = [];
             this.boardBombs2 = [];
             this.boardFlags = [];
+            this.flagCount = 0;
             this.firstTurn = true;
+            this.time = 0;
             this.clearedSquares = document.getElementsByClassName("square-clicked");
+            this.resetBtn = document.getElementById("reset");
             console.log("created");
         }
         // difficulty level selection
         difficulty(level) {
-            if (level == "easy") {
+            if (level == "Easy") {
                 this.row = 8;
                 this.column = 8;
                 this.bombs = 10;
                 this.countOfClear = 54;
-            } else if (level == "intermediate") {
+            } else if (level == "Intermediate") {
                 this.row = 16;
                 this.column = 16;
                 this.bombs = 40;
@@ -34,6 +35,47 @@ document.addEventListener("DOMContentLoaded", function () {
                 this.column = 30;
                 this.bombs = 99;
                 this.countOfClear = 381;
+            }
+        }
+        //reset function
+        reset() {
+            while (this.board.firstChild) {
+                board.removeChild(board.firstChild);
+            }
+            this.boardBombs1 = [];
+            this.boardBombs2 = [];
+            this.firstTurn = true;
+            this.flagCount = 0;
+            this.time = 0;
+            this.createBottomLayer();
+            this.bombCount();
+            this.createGrid();
+            this.resetBtn.removeChild(this.resetBtn.firstChild)
+            let smile = new Image();
+            smile.src = "../img/4-reset-1.png";
+            smile.style.maxWidth = "100%";
+            this.resetBtn.appendChild(smile);
+        }
+        //reset button
+        resetButton() {
+            this.resetBtn.addEventListener("click", e => {
+                this.reset();
+            });
+        }
+        // timer
+        myTimer() {
+            console.log(this.time);
+            document.getElementById("timer").innerHTML = ("000" + this.time).slice(-3);
+            this.time++;
+        }
+        // level selector
+        selectLevel() {
+            let levels = document.getElementsByClassName("level");
+            for (let i = 0; i < levels.length; i++) {
+                levels[i].addEventListener("click", e => {
+                    this.difficulty(e.target.innerText);
+                    this.reset();
+                });
             }
         }
         // main function for interacting with the board
@@ -64,8 +106,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     // makes sure you don't lose on the first click
                     if (this.firstTurn && this.boardBombs1[e.target.parentNode.id][e.target.id] == 1) {
                         boardBombs = this.boardBombs2;
+                        setInterval(e => {
+                            this.time++;
+                            document.getElementById("timer").innerHTML = ("000" + this.time).slice(-3);
+                        }, 1000);
                         this.firstTurn = false;
-                    } else {
+                    } else if (this.firstTurn == true) {
+                        setInterval(e => {
+                            this.time++;
+                            document.getElementById("timer").innerHTML = ("000" + this.time).slice(-3);
+                        }, 1000);
                         this.firstTurn = false;
                     }
                     // lose condition, and carry on condition, need to add board reset sort of function
@@ -87,16 +137,20 @@ document.addEventListener("DOMContentLoaded", function () {
                     e.preventDefault();
                     if (e.target.parentNode.classList.contains("flag")) {
                         this.boardFlags[e.target.parentNode.parentNode.id][e.target.parentNode.id] = 0;
+                        this.flagCount--;
                         e.target.parentNode.setAttribute("class", "square");
                         e.target.parentNode.removeChild(e.target.parentNode.firstChild);
                         e.target.setAttribute("class", "square");
-                    } else {
+                        this.bombCount();
+                    } else if (e.target.classList.contains("square")) {
                         this.boardFlags[e.target.parentNode.id][e.target.id] = 1;
+                        this.flagCount++;
                         e.target.setAttribute("class", "flag");
                         let flag = new Image();
                         flag.src = "../img/flag.png";
                         flag.style.maxWidth = "100%";
                         e.target.appendChild(flag);
+                        this.bombCount();
                     }
 
                 });
@@ -108,6 +162,27 @@ document.addEventListener("DOMContentLoaded", function () {
                             this.winner(squaresClicked);
                         }
                     }
+                });
+                // face change on mousedown
+                squares[i].addEventListener("mousedown", e => {
+                    if (e.target) {
+                        this.resetBtn.removeChild(this.resetBtn.firstChild)
+                        let smile = new Image();
+                        smile.src = "../img/4-reset-2.png";
+                        smile.style.maxWidth = "100%";
+                        this.resetBtn.appendChild(smile);
+                    }
+
+                });
+                squares[i].addEventListener("mouseup", e => {
+                    if (e.target) {
+                        this.resetBtn.removeChild(this.resetBtn.firstChild)
+                        let smile = new Image();
+                        smile.src = "../img/4-reset-1.png";
+                        smile.style.maxWidth = "100%";
+                        this.resetBtn.appendChild(smile);
+                    }
+
                 });
 
             }
@@ -130,9 +205,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     outCells.push(cell);
                 }
             });
-
             return outCells;
-
         }
         // number of bombs surrounding a square and flags
         numberOfBombs(row, col, board) {
@@ -143,6 +216,12 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             return count;
+        }
+        // bombcount
+        bombCount() {
+            let counter = document.getElementById("num-bombs");
+            let num = this.bombs - this.flagCount;
+            counter.innerText = ("000" + num).slice(-3);
         }
         // clears surround area if the square has no bombs surounding it
         clearSurrounding(row, col, board, boardBombs, bool) {
@@ -169,6 +248,7 @@ document.addEventListener("DOMContentLoaded", function () {
             let bombs = this.numberOfBombs(row, col, boardBombs);
             if (bombs > 0 && !bool) {
                 board.childNodes[row].childNodes[col].innerText = "" + bombs;
+                board.childNodes[row].childNodes[col].style.color = this.numColor(bombs);
                 return;
             }
             let cells = this.getSurroundings(row, col);
@@ -178,6 +258,29 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
 
+        }
+        //color of number
+        numColor(num) {
+            switch (num) {
+                case 1:
+                    return "blue";
+                case 2:
+                    return "green";
+                case 3:
+                    return "red";
+                case 4:
+                    return "darkblue";
+                case 5:
+                    return "maroon";
+                case 6:
+                    return "turquoise";
+                case 7:
+                    return "purple";
+                case 8:
+                    return "black";
+                default:
+                    break;
+            }
         }
 
         //random bomb locations
@@ -223,6 +326,11 @@ document.addEventListener("DOMContentLoaded", function () {
         winner(board) {
             if (board.length == this.countOfClear) {
                 alert("winner");
+                this.resetBtn.removeChild(this.resetBtn.firstChild)
+                let smile = new Image();
+                smile.src = "../img/4-reset-3.png";
+                smile.style.maxWidth = "100%";
+                this.resetBtn.appendChild(smile);
             }
         }
     }
@@ -234,7 +342,8 @@ document.addEventListener("DOMContentLoaded", function () {
     hard = document.getElementById("hard");
     buttons = [easy, medium, hard]
 
-    mines.difficulty(level);
+    mines.selectLevel();
     mines.createBottomLayer();
     mines.createGrid();
+    mines.resetButton();
 }); // end of dom
