@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
             this.board = document.getElementById("board");
             this.boardBombs1 = [];
             this.boardBombs2 = [];
+            this.boardFlags = [];
             this.firstTurn = true;
             this.clearedSquares = document.getElementsByClassName("square-clicked");
             console.log("created");
@@ -35,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 this.countOfClear = 381;
             }
         }
-        // main function for interacting with the boeard
+        // main function for interacting with the board
         createGrid() {
             let boardBombs = this.boardBombs1;
             for (let i = 0; i < this.row; i++) {
@@ -76,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         e.target.appendChild(mine);
                         alert("gameover");
                     } else {
-                        this.clearSurrounding(parseInt(e.target.parentNode.id), parseInt(e.target.id), board, boardBombs);
+                        this.clearSurrounding(parseInt(e.target.parentNode.id), parseInt(e.target.id), board, boardBombs, false);
                         this.winner(squaresClicked);
                     }
 
@@ -85,11 +86,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 squares[i].addEventListener("contextmenu", e => {
                     e.preventDefault();
                     if (e.target.parentNode.classList.contains("flag")) {
-                        console.log("doing something");
-                        e.target.parentNode.removeChild(e.target.parentNode.firstChild);
+                        this.boardFlags[e.target.parentNode.parentNode.id][e.target.parentNode.id] = 0;
                         e.target.parentNode.setAttribute("class", "square");
-
+                        e.target.parentNode.removeChild(e.target.parentNode.firstChild);
+                        e.target.setAttribute("class", "square");
                     } else {
+                        this.boardFlags[e.target.parentNode.id][e.target.id] = 1;
                         e.target.setAttribute("class", "flag");
                         let flag = new Image();
                         flag.src = "../img/flag.png";
@@ -97,6 +99,15 @@ document.addEventListener("DOMContentLoaded", function () {
                         e.target.appendChild(flag);
                     }
 
+                });
+                // double click to clear if flagged is the same as the number of bombs surrounding it
+                squares[i].addEventListener("dblclick", e => {
+                    if (e.target.classList.contains("square-clicked")) {
+                        if (e.target.innerText == this.numberOfBombs(parseInt(e.target.parentNode.id), parseInt(e.target.id), this.boardFlags)) {
+                            this.clearSurrounding(parseInt(e.target.parentNode.id), parseInt(e.target.id), board, boardBombs, true);
+                            this.winner(squaresClicked);
+                        }
+                    }
                 });
 
             }
@@ -123,7 +134,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return outCells;
 
         }
-        // number of bombs surrounding a square
+        // number of bombs surrounding a square and flags
         numberOfBombs(row, col, board) {
             let count = 0;
             let cells = this.getSurroundings(row, col);
@@ -134,25 +145,42 @@ document.addEventListener("DOMContentLoaded", function () {
             return count;
         }
         // clears surround area if the square has no bombs surounding it
-        clearSurrounding(row, col, board, boardBombs) {
+        clearSurrounding(row, col, board, boardBombs, bool) {
             if (row < 0 || row >= this.row || col < 0 || col >= this.column) {
                 return;
             }
 
-            if (board.childNodes[row].childNodes[col].classList.contains("square-clicked")) {
+            if (board.childNodes[row].childNodes[col].classList.contains("square-clicked") && !bool) {
+                return;
+            }
+            if (board.childNodes[row].childNodes[col].classList.contains("flag") && !bool) {
+                return;
+            }
+            if (boardBombs[row][col] == 1) {
+                board.childNodes[row].childNodes[col].setAttribute("class", "bomb");
+                let mine = new Image();
+                mine.src = "../img/bomb.png";
+                mine.style.maxWidth = "100%";
+                board.childNodes[row].childNodes[col].appendChild(mine);
+                alert("gameover");
                 return;
             }
             board.childNodes[row].childNodes[col].setAttribute("class", "square-clicked");
             let bombs = this.numberOfBombs(row, col, boardBombs);
-            if (bombs > 0) {
+            if (bombs > 0 && !bool) {
                 board.childNodes[row].childNodes[col].innerText = "" + bombs;
                 return;
             }
             let cells = this.getSurroundings(row, col);
+            // console.log(cells);
             cells.forEach(cell => {
-                this.clearSurrounding(cell[0], cell[1], board, boardBombs);
+                this.clearSurrounding(cell[0], cell[1], board, boardBombs, false);
             });
+
+
         }
+
+        //random bomb locations
         randomBombLocations(lengths) {
             return Math.floor(Math.random() * lengths);
         }
@@ -163,9 +191,11 @@ document.addEventListener("DOMContentLoaded", function () {
             for (let i = 0; i < this.row; i++) {
                 this.boardBombs1.push([]);
                 this.boardBombs2.push([]);
+                this.boardFlags.push([]);
                 for (let j = 0; j < this.column; j++) {
                     this.boardBombs1[i].push(0);
                     this.boardBombs2[i].push(0);
+                    this.boardFlags[i].push(0);
                 }
             }
             while (count > 0) {

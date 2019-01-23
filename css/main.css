@@ -57,7 +57,6 @@ body {
 
 .bomb {
     display: inline-block;
-    /* background-image: url("../img/icon.ico"); */
     background: red;
     width: 40px;
     height: 40px;
