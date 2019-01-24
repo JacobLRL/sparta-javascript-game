@@ -10,13 +10,16 @@ html {
 }
 
 body {
-    background: pink;
+    background-image: url("../img/background.jpg");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100%;
     font-family: 'Press Start 2P', cursive;
+    margin: 0;
 }
 
 img {
@@ -27,6 +30,7 @@ img {
 h1 {
     user-select: none;
     vertical-align: top;
+    font-size: 30px;
 }
 
 /* ID SELECTORS */
@@ -53,6 +57,7 @@ h1 {
     color: red;
     font-size: 54px;
     text-align: center;
+    border: inset 5px;
 }
 
 #num-bombs {
@@ -121,6 +126,26 @@ h1 {
 }
 
 /* CLASS SELECTORS */
+.window-container {
+    display: flex;
+    flex-direction: column;
+    background: #255ed9;
+    /* padding-top: 40px; */
+    border: 2px outset #5581e0;
+    border-radius: 4px;
+}
+
+.bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 3px;
+}
+
+.bar img {
+    height: 35px;
+    margin-left: 5px;
+}
 
 .row {
     display: block;

@@ -22,10 +22,16 @@ document.addEventListener("DOMContentLoaded", function () {
             this.instructionBtn = document.getElementById("instructions");
             this.instructions = document.getElementById("instructions-box")
             this.returnBtn = document.getElementById("return-to-game");
-            this.mainContainer = document.getElementById("main-container");
+            this.mainContainer = document.getElementsByClassName("window-container");
             this.learning = document.getElementById("learning");
             this.levels = document.getElementsByClassName("level");
             this.learningMode = false;
+        }
+        // setting windows to invisible
+        hide() {
+            for(let i = 1; i<this.mainContainer.length; i++){
+                this.mainContainer[i].style.display = "none";
+            }
         }
         // difficulty level selection
         difficulty(level) {
@@ -91,6 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         // main function for interacting with the board
         createGrid() {
+            this.hide();
             let boardBombs = this.boardBombs1;
             for (let i = 0; i < this.row; i++) {
                 const row1 = document.createElement("div");
@@ -202,11 +209,13 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             // instructions button
             this.instructionBtn.addEventListener("click", e => {
-                this.mainContainer.style.display = "none";
+                this.mainContainer[0].style.display = "none";
+                this.mainContainer[1].style.display = "flex";
                 this.instructions.style.display = "flex";
             });
             this.returnBtn.addEventListener("click", e => {
-                this.mainContainer.style.display = "flex";
+                this.mainContainer[0].style.display = "flex";
+                this.mainContainer[1].style.display = "none";
                 this.instructions.style.display = "none";
             });
         }
@@ -342,10 +351,10 @@ document.addEventListener("DOMContentLoaded", function () {
             if (board.length == this.countOfClear) {
                 let winning = document.getElementById("winning");
                 let timeText = document.getElementById("time-text");
-                let mainContainer = document.getElementById("main-container");
                 let newGame = document.getElementById("new-game");
                 winning.style.display = "flex";
-                mainContainer.style.display = "none";
+                this.mainContainer[0].style.display = "none";
+                this.mainContainer[2].style.display = "flex";
                 timeText.innerText = `Your time was: ${this.time} seconds`;
                 this.resetBtn.removeChild(this.resetBtn.firstChild)
                 let smile = new Image();
@@ -356,7 +365,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 this.score = this.time;
                 newGame.addEventListener("click", e => {
                     winning.style.display = "none";
-                    mainContainer.style.display = "flex";
+                    this.mainContainer[0].style.display = "flex";
                     this.reset;
                 });
             }
@@ -364,7 +373,6 @@ document.addEventListener("DOMContentLoaded", function () {
         // lose condition
         loser(cell) {
             let losing = document.getElementById("losing");
-            let mainContainer = document.getElementById("main-container");
             let newGame = document.getElementById("new-game-lose");
             clearInterval(this.timer);
             cell.setAttribute("class", "bomb");
@@ -375,10 +383,11 @@ document.addEventListener("DOMContentLoaded", function () {
             mine.style.maxWidth = "100%";
             cell.appendChild(mine);
             losing.style.display = "flex";
-            mainContainer.style.display = "none";
+            this.mainContainer[0].style.display = "none";
+            this.mainContainer[3].style.display = "flex";
             newGame.addEventListener("click", e => {
                 losing.style.display = "none";
-                mainContainer.style.display = "flex";
+                this.mainContainer[0].style.display = "flex";
                 this.reset;
             });
         }
