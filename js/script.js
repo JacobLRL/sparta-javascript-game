@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         // setting windows to invisible
         hide() {
-            for(let i = 1; i<this.mainContainer.length; i++){
+            for (let i = 1; i < this.mainContainer.length; i++) {
                 this.mainContainer[i].style.display = "none";
             }
         }
@@ -358,6 +358,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 timeText.innerText = `Your time was: ${this.time} seconds`;
                 this.resetBtn.removeChild(this.resetBtn.firstChild)
                 let smile = new Image();
+                let audio = new Audio("../audio/winner.mp3");
+                audio.play();
                 smile.src = "../img/4-reset-3.png";
                 smile.style.maxWidth = "100%";
                 this.resetBtn.appendChild(smile);
@@ -366,6 +368,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 newGame.addEventListener("click", e => {
                     winning.style.display = "none";
                     this.mainContainer[0].style.display = "flex";
+                    this.mainContainer[2].style.display = "none";
                     this.reset;
                 });
             }
@@ -388,6 +391,7 @@ document.addEventListener("DOMContentLoaded", function () {
             newGame.addEventListener("click", e => {
                 losing.style.display = "none";
                 this.mainContainer[0].style.display = "flex";
+                this.mainContainer[3].style.display = "none";
                 this.reset;
             });
         }
