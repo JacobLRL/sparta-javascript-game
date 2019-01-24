@@ -14,6 +14,8 @@ document.addEventListener("DOMContentLoaded", function () {
             this.flagCount = 0;
             this.firstTurn = true;
             this.time = 0;
+            this.timer;
+            this.score;
             this.clearedSquares = document.getElementsByClassName("square-clicked");
             this.resetBtn = document.getElementById("reset");
             console.log("created");
@@ -46,7 +48,10 @@ document.addEventListener("DOMContentLoaded", function () {
             this.boardBombs2 = [];
             this.firstTurn = true;
             this.flagCount = 0;
+            this.boardFlags = [];
             this.time = 0;
+            clearInterval(this.timer);
+            document.getElementById("timer").innerHTML = ("000" + this.time).slice(-3);
             this.createBottomLayer();
             this.bombCount();
             this.createGrid();
@@ -61,12 +66,6 @@ document.addEventListener("DOMContentLoaded", function () {
             this.resetBtn.addEventListener("click", e => {
                 this.reset();
             });
-        }
-        // timer
-        myTimer() {
-            console.log(this.time);
-            document.getElementById("timer").innerHTML = ("000" + this.time).slice(-3);
-            this.time++;
         }
         // level selector
         selectLevel() {
@@ -106,13 +105,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     // makes sure you don't lose on the first click
                     if (this.firstTurn && this.boardBombs1[e.target.parentNode.id][e.target.id] == 1) {
                         boardBombs = this.boardBombs2;
-                        setInterval(e => {
+                        this.timer = setInterval(e => {
                             this.time++;
                             document.getElementById("timer").innerHTML = ("000" + this.time).slice(-3);
                         }, 1000);
                         this.firstTurn = false;
                     } else if (this.firstTurn == true) {
-                        setInterval(e => {
+                        this.timer = setInterval(e => {
                             this.time++;
                             document.getElementById("timer").innerHTML = ("000" + this.time).slice(-3);
                         }, 1000);
@@ -120,12 +119,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                     // lose condition, and carry on condition, need to add board reset sort of function
                     if (boardBombs[e.target.parentNode.id][e.target.id] == 1) {
-                        e.target.setAttribute("class", "bomb");
-                        let mine = new Image();
-                        mine.src = "../img/bomb.png";
-                        mine.style.maxWidth = "100%";
-                        e.target.appendChild(mine);
-                        alert("gameover");
+                        this.loser(e.target);
                     } else {
                         this.clearSurrounding(parseInt(e.target.parentNode.id), parseInt(e.target.id), board, boardBombs, false);
                         this.winner(squaresClicked);
@@ -186,6 +180,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
 
             }
+            let instructionBtn = document.getElementById("instructions");
+            let instructions = document.getElementById("instructions-box")
+            let returnBtn = document.getElementById("return-to-game");
+            let mainContainer = document.getElementById("main-container");
+            instructionBtn.addEventListener("click", e => {
+                mainContainer.style.display = "none";
+                instructions.style.display = "flex";
+            });
+            returnBtn.addEventListener("click", e => {
+                mainContainer.style.display = "flex";
+                instructions.style.display = "none";
+            });
         }
         // gets the surroundings
         getSurroundings(row, col) {
@@ -236,12 +242,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
             if (boardBombs[row][col] == 1) {
-                board.childNodes[row].childNodes[col].setAttribute("class", "bomb");
-                let mine = new Image();
-                mine.src = "../img/bomb.png";
-                mine.style.maxWidth = "100%";
-                board.childNodes[row].childNodes[col].appendChild(mine);
-                alert("gameover");
+                this.loser(board.childNodes[row].childNodes[col]);
                 return;
             }
             board.childNodes[row].childNodes[col].setAttribute("class", "square-clicked");
@@ -273,7 +274,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 case 5:
                     return "maroon";
                 case 6:
-                    return "turquoise";
+                    return "#006768";
                 case 7:
                     return "purple";
                 case 8:
@@ -319,23 +320,55 @@ document.addEventListener("DOMContentLoaded", function () {
                     count1--;
                 }
             }
-            console.log(this.boardBombs1);
-            console.log(this.boardBombs2);
         }
         // win condition
         winner(board) {
             if (board.length == this.countOfClear) {
-                alert("winner");
+                let winning = document.getElementById("winning");
+                let timeText = document.getElementById("time-text");
+                let mainContainer = document.getElementById("main-container");
+                let newGame = document.getElementById("new-game");
+                winning.style.display = "flex";
+                mainContainer.style.display = "none";
+                timeText.innerText = `Your time was: ${this.time} seconds`;
                 this.resetBtn.removeChild(this.resetBtn.firstChild)
                 let smile = new Image();
                 smile.src = "../img/4-reset-3.png";
                 smile.style.maxWidth = "100%";
                 this.resetBtn.appendChild(smile);
+                clearInterval(this.timer);
+                this.score = this.time;
+                newGame.addEventListener("click", e => {
+                    winning.style.display = "none";
+                    mainContainer.style.display = "flex";
+                    this.reset;
+                });
             }
+        }
+        // lose condition
+        loser(cell) {
+            let losing = document.getElementById("losing");
+            let mainContainer = document.getElementById("main-container");
+            let newGame = document.getElementById("new-game-lose");
+            clearInterval(this.timer);
+            cell.setAttribute("class", "bomb");
+            let mine = new Image();
+            let audio = new Audio("../audio/bomb.mp3");
+            audio.play();
+            mine.src = "../img/bomb.png";
+            mine.style.maxWidth = "100%";
+            cell.appendChild(mine);
+            losing.style.display = "flex";
+            mainContainer.style.display = "none";
+            newGame.addEventListener("click", e => {
+                losing.style.display = "none";
+                mainContainer.style.display = "flex";
+                this.reset;
+            });
         }
     }
 
-
+    //initialise game
     let mines = new MineSweeper();
     easy = document.getElementById("easy");
     medium = document.getElementById("medium");
