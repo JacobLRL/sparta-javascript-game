@@ -16,9 +16,16 @@ document.addEventListener("DOMContentLoaded", function () {
             this.time = 0;
             this.timer;
             this.score;
-            this.clearedSquares = document.getElementsByClassName("square-clicked");
+            this.squares = document.getElementsByClassName("square");
+            this.squaresClicked = document.getElementsByClassName("square-clicked");
             this.resetBtn = document.getElementById("reset");
-            console.log("created");
+            this.instructionBtn = document.getElementById("instructions");
+            this.instructions = document.getElementById("instructions-box")
+            this.returnBtn = document.getElementById("return-to-game");
+            this.mainContainer = document.getElementById("main-container");
+            this.learning = document.getElementById("learning");
+            this.levels = document.getElementsByClassName("level");
+            this.learningMode = false;
         }
         // difficulty level selection
         difficulty(level) {
@@ -69,13 +76,18 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         // level selector
         selectLevel() {
-            let levels = document.getElementsByClassName("level");
-            for (let i = 0; i < levels.length; i++) {
-                levels[i].addEventListener("click", e => {
+            for (let i = 0; i < this.levels.length; i++) {
+                this.levels[i].addEventListener("click", e => {
                     this.difficulty(e.target.innerText);
                     this.reset();
+                    this.learningMode = false;
                 });
             }
+        }
+        selectLearningMode() {
+            this.learning.addEventListener("click", e => {
+                this.learningMode = !this.learningMode;
+            });
         }
         // main function for interacting with the board
         createGrid() {
@@ -93,10 +105,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
                 board.appendChild(row1);
             }
-            let squares = document.getElementsByClassName("square");
-            let squaresClicked = document.getElementsByClassName("square-clicked");
-            for (let i = 0; i < squares.length; i++) {
-                squares[i].addEventListener("click", e => {
+            for (let i = 0; i < this.squares.length; i++) {
+                this.squares[i].addEventListener("click", e => {
                     // stops clicking on flagged squares
                     if (e.target.parentNode.classList.contains("flag"))
                         return;
@@ -122,12 +132,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         this.loser(e.target);
                     } else {
                         this.clearSurrounding(parseInt(e.target.parentNode.id), parseInt(e.target.id), board, boardBombs, false);
-                        this.winner(squaresClicked);
+                        this.winner(this.squaresClicked);
                     }
 
                 });
                 // flag and unflag squares
-                squares[i].addEventListener("contextmenu", e => {
+                this.squares[i].addEventListener("contextmenu", e => {
                     e.preventDefault();
                     if (e.target.parentNode.classList.contains("flag")) {
                         this.boardFlags[e.target.parentNode.parentNode.id][e.target.parentNode.id] = 0;
@@ -149,16 +159,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 });
                 // double click to clear if flagged is the same as the number of bombs surrounding it
-                squares[i].addEventListener("dblclick", e => {
+                this.squares[i].addEventListener("dblclick", e => {
                     if (e.target.classList.contains("square-clicked")) {
                         if (e.target.innerText == this.numberOfBombs(parseInt(e.target.parentNode.id), parseInt(e.target.id), this.boardFlags)) {
                             this.clearSurrounding(parseInt(e.target.parentNode.id), parseInt(e.target.id), board, boardBombs, true);
-                            this.winner(squaresClicked);
+                            this.winner(this.squaresClicked);
                         }
                     }
                 });
                 // face change on mousedown
-                squares[i].addEventListener("mousedown", e => {
+                this.squares[i].addEventListener("mousedown", e => {
                     if (e.target) {
                         this.resetBtn.removeChild(this.resetBtn.firstChild)
                         let smile = new Image();
@@ -166,9 +176,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         smile.style.maxWidth = "100%";
                         this.resetBtn.appendChild(smile);
                     }
-
                 });
-                squares[i].addEventListener("mouseup", e => {
+                this.squares[i].addEventListener("mouseup", e => {
                     if (e.target) {
                         this.resetBtn.removeChild(this.resetBtn.firstChild)
                         let smile = new Image();
@@ -178,19 +187,27 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
 
                 });
+                //for learning mode
+                this.squares[i].addEventListener("mouseenter", e => {
+                    if (this.learningMode) {
+                        if (boardBombs[e.target.parentNode.id][e.target.id] == 1) e.target.style.cursor = "pointer";
+                    }
+                });
+                this.squares[i].addEventListener("mouseleave", e => {
+                    if (this.learningMode) {
+                        if (boardBombs[e.target.parentNode.id][e.target.id] == 1) e.target.style.cursor = "default";
+                    }
+                });
 
             }
-            let instructionBtn = document.getElementById("instructions");
-            let instructions = document.getElementById("instructions-box")
-            let returnBtn = document.getElementById("return-to-game");
-            let mainContainer = document.getElementById("main-container");
-            instructionBtn.addEventListener("click", e => {
-                mainContainer.style.display = "none";
-                instructions.style.display = "flex";
+            // instructions button
+            this.instructionBtn.addEventListener("click", e => {
+                this.mainContainer.style.display = "none";
+                this.instructions.style.display = "flex";
             });
-            returnBtn.addEventListener("click", e => {
-                mainContainer.style.display = "flex";
-                instructions.style.display = "none";
+            this.returnBtn.addEventListener("click", e => {
+                this.mainContainer.style.display = "flex";
+                this.instructions.style.display = "none";
             });
         }
         // gets the surroundings
@@ -283,7 +300,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     break;
             }
         }
-
         //random bomb locations
         randomBombLocations(lengths) {
             return Math.floor(Math.random() * lengths);
@@ -376,6 +392,7 @@ document.addEventListener("DOMContentLoaded", function () {
     buttons = [easy, medium, hard]
 
     mines.selectLevel();
+    mines.selectLearningMode();
     mines.createBottomLayer();
     mines.createGrid();
     mines.resetButton();

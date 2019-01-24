@@ -26,6 +26,7 @@ img {
 
 h1 {
     user-select: none;
+    vertical-align: top;
 }
 
 /* ID SELECTORS */
@@ -103,13 +104,20 @@ h1 {
     text-align: center;
 }
 
+#level-selector div:hover, #settings div:hover,  #return-to-game:hover, #new-game:hover, #new-game-lose:hover {
+    cursor: pointer;
+}
+
 #instructions-box {
     width: 380px;
     font-size: 15px; 
+    line-height: 1.5;
 }
 
 #winning, #losing {
     display: none;
+    padding: 10px;
+    line-height: 1.5;
 }
 
 /* CLASS SELECTORS */
