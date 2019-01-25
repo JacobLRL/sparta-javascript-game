@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Mine Sweeper</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="img/icon.ico">
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/main.css" />
+    <script src="js/script.js"></script>
+</head>
+
+<body>
+    <div class="window-container">
+        <div class="bar">
+            <img src="/img/minimise.png" alt="">
+            <img src="/img/max.png" alt="">
+            <img src="/img/cross.png" alt="">
+        </div>
+        <div id="main-container">
+            <h1>MineSweeper</h1>
+            <div id="top-container">
+                <div id="num-bombs">010</div>
+                <div id="reset"><img src="img/4-reset-1.png" alt=""></div>
+                <div id="timer">000</div>
+            </div>
+            <div id="board"></div>
+            <div id="level-selector">
+                <div id="easy" class="level">Easy</div>
+                <div id="middle" class="level">Intermediate</div>
+                <div id="hard" class="level">Advanced</div>
+            </div>
+            <div id="settings">
+                <div id="instructions">Instructions</div>
+                <div id="learning">Learning Mode</div>
+            </div>
+        </div>
+    </div>
+    <div class="window-container">
+        <div class="bar">
+            <img src="/img/minimise.png" alt="">
+            <img src="/img/max.png" alt="">
+            <img src="/img/cross.png" alt="">
+        </div>
+        <div id="instructions-box">
+            <h2>Instructions</h2>
+            <p>You are presented with a board of squares. Some squares contain mines (bombs), others don't. If you
+                click on
+                a square containing a bomb, you lose. If you manage to click all the squares (without clicking on any
+                bombs) you win.</p>
+            <div id="return-to-game">Back to Game</div>
+        </div>
+    </div>
+    <div class="window-container">
+        <div class="bar">
+            <img src="/img/minimise.png" alt="">
+            <img src="/img/max.png" alt="">
+            <img src="/img/cross.png" alt="">
+        </div>
+        <div id="winning">
+            <h2>You Win!</h2>
+            <div id="time-text"></div>
+            <div id="new-game">New Game</div>
+        </div>
+    </div>
+    <div class="window-container">
+        <div class="bar">
+            <img src="/img/minimise.png" alt="">
+            <img src="/img/max.png" alt="">
+            <img src="/img/cross.png" alt="">
+        </div>
+        <div id="losing">
+            <h2>You lose!</h2>
+            <div id="new-game-lose">New Game</div>
+        </div>
+    </div>
+
+</body>
+
+</html>

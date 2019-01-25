@@ -1,0 +1,220 @@
+/* BUILT INTO HTML */
+
+html {
+    height: 100%;
+}
+
+@font-face{
+    font-family:'digital-clock-font';
+    src: url('../fonts/digital-7.ttf');
+}
+
+body {
+    background-image: url("../img/background.jpg");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-family: 'Press Start 2P', cursive;
+    margin: 0;
+}
+
+img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+h1 {
+    user-select: none;
+    vertical-align: top;
+    font-size: 30px;
+}
+
+/* ID SELECTORS */
+
+#main-container, #instructions-box, #winning, #losing {
+    display: flex;
+    flex-direction: column;
+    border-style: outset;
+    padding: 10px;
+    background: #b8b8b8;
+}
+
+#instructions-box {
+    display: none;
+    text-align: justify;
+}
+
+#top-container {
+    display: flex;
+    max-width: 100%;
+    padding: 10px;
+    justify-content: space-between;
+    font-family: digital-clock-font;
+    color: red;
+    font-size: 54px;
+    text-align: center;
+    border: inset 5px;
+}
+
+#num-bombs {
+    height: 50px;
+    background: black;
+    width: 80px;
+    border: inset;
+}
+
+#reset {
+    height: 45px;
+    width: 50px;
+    border: outset;
+    max-width: 100%;
+}
+
+#reset:focus {
+    outline: none;
+    border-style: inset;
+}
+
+#timer {
+    height: 50px;
+    background: black;
+    width: 80px;
+    border: inset;
+}
+
+#board {
+    display: block;
+    border-style: inset;
+    border-width: 5px;
+}
+
+#level-selector, #settings {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: center;
+    vertical-align: center;
+    padding-top: 10px;
+    user-select: none;
+}
+
+#level-selector div, #settings div,  #return-to-game, #new-game, #new-game-lose {
+    border: outset;
+    padding: 10px;
+    font-size: 10px;
+    text-align: center;
+}
+
+#level-selector div:hover, #settings div:hover,  #return-to-game:hover, #new-game:hover, #new-game-lose:hover {
+    cursor: pointer;
+}
+
+#instructions-box {
+    width: 380px;
+    font-size: 15px; 
+    line-height: 1.5;
+}
+
+#winning, #losing {
+    display: none;
+    padding: 10px;
+    line-height: 1.5;
+}
+
+/* CLASS SELECTORS */
+.window-container {
+    display: flex;
+    flex-direction: column;
+    background: #255ed9;
+    /* padding-top: 40px; */
+    border: 2px outset #5581e0;
+    border-radius: 4px;
+}
+
+.bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 3px;
+}
+
+.bar img {
+    height: 35px;
+    margin-left: 5px;
+}
+
+.row {
+    display: block;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.square {
+    display: inline-block;
+    background: #b8b8b8;
+    border-style: outset;
+    border-width: 5px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    margin-top: 0;
+    vertical-align: middle;
+}
+
+.square:focus {
+    outline: none;
+    border-style: inset;
+}
+
+.square-clicked {
+    display: inline-block;
+    background: #bfbfbf;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    margin-top: 0;
+    vertical-align: middle;
+    line-height: 43px;
+    font-size: 26px;
+    text-align: center;
+    user-select: none;
+}
+
+.square-clicked:focus {
+    outline: none;
+}
+
+.bomb {
+    display: inline-block;
+    background: red;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    margin-top: 0;
+    vertical-align: bottom;
+}
+
+.bomb:focus {
+    outline:none;
+}
+
+.flag {
+    display: inline-block;
+    background: #b8b8b8;
+    border-style: outset;
+    border-width: 5px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    margin-top: 0;
+    vertical-align: bottom;
+}
+
+.flag:focus {
+    outline: none;
+}
