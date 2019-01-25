@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (e.target) {
                         this.resetBtn.removeChild(this.resetBtn.firstChild)
                         let smile = new Image();
-                        smile.src = "../img/4-reset-2.png";
+                        smile.src = "./img/4-reset-2.png";
                         smile.style.maxWidth = "100%";
                         this.resetBtn.appendChild(smile);
                     }
@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (e.target) {
                         this.resetBtn.removeChild(this.resetBtn.firstChild)
                         let smile = new Image();
-                        smile.src = "../img/4-reset-1.png";
+                        smile.src = "./img/4-reset-1.png";
                         smile.style.maxWidth = "100%";
                         this.resetBtn.appendChild(smile);
                     }
@@ -358,7 +358,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 timeText.innerText = `Your time was: ${this.time} seconds`;
                 this.resetBtn.removeChild(this.resetBtn.firstChild)
                 let smile = new Image();
-                let audio = new Audio("../audio/winner.mp3");
+                let audio = new Audio("./audio/winner.mp3");
                 audio.play();
                 smile.src = "../img/4-reset-3.png";
                 smile.style.maxWidth = "100%";
@@ -380,9 +380,9 @@ document.addEventListener("DOMContentLoaded", function () {
             clearInterval(this.timer);
             cell.setAttribute("class", "bomb");
             let mine = new Image();
-            let audio = new Audio("../audio/bomb.mp3");
+            let audio = new Audio("./audio/bomb.mp3");
             audio.play();
-            mine.src = "../img/bomb.png";
+            mine.src = "./img/bomb.png";
             mine.style.maxWidth = "100%";
             cell.appendChild(mine);
             losing.style.display = "flex";
