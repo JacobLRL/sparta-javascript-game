@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
             this.createGrid();
             this.resetBtn.removeChild(this.resetBtn.firstChild)
             let smile = new Image();
-            smile.src = "../img/4-reset-1.png";
+            smile.src = "./img/4-reset-1.png";
             smile.style.maxWidth = "100%";
             this.resetBtn.appendChild(smile);
         }
@@ -158,7 +158,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         this.flagCount++;
                         e.target.setAttribute("class", "flag");
                         let flag = new Image();
-                        flag.src = "../img/flag.png";
+                        flag.src = "./img/flag.png";
                         flag.style.maxWidth = "100%";
                         e.target.appendChild(flag);
                         this.bombCount();
@@ -360,7 +360,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 let smile = new Image();
                 let audio = new Audio("./audio/winner.mp3");
                 audio.play();
-                smile.src = "../img/4-reset-3.png";
+                smile.src = "./img/4-reset-3.png";
                 smile.style.maxWidth = "100%";
                 this.resetBtn.appendChild(smile);
                 clearInterval(this.timer);
@@ -384,6 +384,11 @@ document.addEventListener("DOMContentLoaded", function () {
             audio.play();
             mine.src = "./img/bomb.png";
             mine.style.maxWidth = "100%";
+            this.resetBtn.removeChild(this.resetBtn.firstChild)
+            let smile = new Image();
+            smile.src = "./img/4-reset-4.png";
+            smile.style.maxWidth = "100%";
+            this.resetBtn.appendChild(smile);
             cell.appendChild(mine);
             losing.style.display = "flex";
             this.mainContainer[0].style.display = "none";
