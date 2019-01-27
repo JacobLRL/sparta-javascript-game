@@ -1,6 +1,6 @@
 # sparta-javascript-game
 
-[Link](jacoblrl.github.io/sparta-javascript-game)
+[Link](https://jacoblrl.github.io/sparta-javascript-game)
 
 ## Rules:
 You are presented with a board of squares. Some squares contain mines (bombs), others don't. If you click on a square containing a bomb, you lose. If you manage to click all the squares (without clicking on any bombs) you win.
