@@ -1,5 +1,8 @@
 # sparta-javascript-game
 
+## Link:
+jacoblrl.github.io/sparta-javascript-game
+
 ## Rules:
 You are presented with a board of squares. Some squares contain mines (bombs), others don't. If you click on a square containing a bomb, you lose. If you manage to click all the squares (without clicking on any bombs) you win.
 
@@ -18,3 +21,6 @@ Learning Mode: Mouse changes from default cursor to pointer when hovering over a
 Top left is the number of bombs left after flagging
 Top right is the timer
 The "Smiley face" in the top middle is the reset button
+
+## Information:
+This game was created in 5 days as part of Sparta's javascript games week, where I put my javascript knowledge to the test by building one of my favourite, addicting games Minesweeper, looks best in Google Chrome.
