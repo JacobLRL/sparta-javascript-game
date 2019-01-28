@@ -21,5 +21,10 @@ Top left is the number of bombs left after flagging
 Top right is the timer  
 The "Smiley face" in the top middle is the reset button
 
+## Implementation:
+* HTML5  
+* CSS  
+* JavaScript  
+
 ## Information:
 This game was created in 5 days as part of Sparta's javascript games week, where I put my javascript knowledge to the test by building one of my favourite, addicting games Minesweeper, looks best in Google Chrome.
